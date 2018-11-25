@@ -15,16 +15,20 @@ passport.use(
     new GoogleStrategy({
         // options for google strategy
         clientID: '107637168141-h8j7h2js297dfsui15d2n6v4oifnlr0p.apps.googleusercontent.com',
-        clientSecret: 'lIkxXbcKK7nTbQUIGvTtXRFG',
-        callbackURL: 'lIkxXbcKK7nTbQUIGvTtXRFG'
+        clientSecret: '0fGmVM-5oE2lSLscbfakZbaW',
+        callbackURL: 'http://localhost:3300/auth/google/redirect'
     }, (accessToken, refreshToken, profile, done) => {
         // check if user already exists in our own db
+        console.log("1");
         User.findOne({googleId: profile.id}).then((currentUser) => {
+            console.log("2");
             if(currentUser){
+                console.log("3");
                 // already have this user
                 console.log('user is: ', currentUser);
                 done(null, currentUser);
             } else {
+                console.log("4");
                 // if not, create user in our db
                 new User({
                     googleId: profile.id,

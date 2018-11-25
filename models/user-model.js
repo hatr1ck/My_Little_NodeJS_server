@@ -15,7 +15,6 @@ loginSchema.methods.isPasswordValid = function(rawPassword, callback) {
       if (err) {
           callback(err);
       }
-      console.log(rawPassword, this.password)
       callback(null, same);
   });
 };
@@ -35,7 +34,6 @@ loginSchema.pre('save', function (next) {
   const userSchema = new Schema({
     username: String,
     googleId: String,
-    password: String,
     email: String,
     thumbnail: String
 });
@@ -58,7 +56,4 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     	if(err) throw err;
     	callback(null, isMatch);
 	});
-}
-module.exports.getUserById = function(id, callback){
-	User.findById(id, callback);
 }

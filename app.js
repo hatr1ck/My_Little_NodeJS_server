@@ -11,6 +11,10 @@ const app = express();
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const session = require('express-session');
+const server = app.listen(3300, () => {
+    console.log('app now listening for requests on port 3300');
+});
+const io = require('socket.io').listen(server);
 // Add headers
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -40,8 +44,19 @@ app.use('/list', listRoutes);
 // app.get('/', (req, res) => {
 //     res.render('home', { user: req.user });
 // // });
-// app.use('/', express.static(path.join(__dirname, './build')));
-// app.use(express.static('dist'));
-app.listen(3300, () => {
-    console.log('app now listening for requests on port 3100');
+app.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+      res.redirect('http://localhost:3000/login1');
 });
+app.use('/', express.static(path.join(__dirname, './build')));
+// app.use(express.static('dist'));
+
+
+//web sockets
+io.on('connection', (socket)=>{
+	socket.on('chat', (data)=>{
+		io.sockets.emit('chat', data)
+	})
+	socket.on('typing', (data)=>{
+		socket.broadcast.emit('typing', data)
+	})
+})

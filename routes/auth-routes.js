@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const passport = require('passport');
-const {Login} = require('../models/user-model');
+const {Login, User} = require('../models/user-model');
 const LocalStrategy = require('passport-local').Strategy;
 
 router.post('/login',
@@ -89,23 +89,21 @@ passport.use(new LocalStrategy(function(username, password, done) {
         });
     });
 }));
-    passport.serializeUser(function (user, done) {
-        done(null, user);
+    passport.serializeUser( (user, done)=> {
+        done(null, user.id);
     });
-    
-    passport.deserializeUser(function (id, done) {
-        Login.getUserById(id, function (err, user) {
-            done(err, user);
-        });
+    passport.deserializeUser((id, done)=> {
+    Login.findById(id, function(err, user) {
+        console.log(err)
+        done(err, user);
     });
-
+});
 router.get('/allusers', function(req, res){
-    Login.find(function (err, data) {
-        res.send(data.map((obj)=>{
+  Promise.all([Login.find(),User.find()]).then((some)=> res.send(some[0].concat(some[1]).map((obj)=>{
             return obj.username;
-        }));
-  }
-  )});
+        })))
+});
+
 
 // auth with google+
 router.get('/google', passport.authenticate('google', {
@@ -115,7 +113,7 @@ router.get('/google', passport.authenticate('google', {
 // callback route for google to redirect to
 // hand control to passport to use code to grab profile info
 router.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-     res.redirect('http://localhost:3300/login1/');
+     // res.redirect('http://localhost:3000/login1/');
 });
 
 module.exports = router;
