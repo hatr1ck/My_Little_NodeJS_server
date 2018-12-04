@@ -44,13 +44,16 @@ app.use('/list', listRoutes);
 // app.get('/', (req, res) => {
 //     res.render('home', { user: req.user });
 // // });
-app.get('/google/redirect', passport.authenticate('google'), (req, res) => {
-      res.redirect('http://localhost:3000/login1');
+// app.get('/google/redirect', passport.authenticate('google'), (req, res) => {
+//       res.redirect('http://localhost:3000/login1');
+// });
+//app.use('/', express.static(path.join(__dirname, './build')));
+//app.use(express.static('dist'));
+
+app.use(express.static(path.join(__dirname, 'build')));
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/build/index.html'));
 });
-app.use('/', express.static(path.join(__dirname, './build')));
-// app.use(express.static('dist'));
-
-
 //web sockets
 io.on('connection', (socket)=>{
 	socket.on('chat', (data)=>{
