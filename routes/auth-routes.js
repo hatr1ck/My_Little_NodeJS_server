@@ -112,7 +112,7 @@ router.get('/allusers', function(req, res) {
         list: some[0].concat(some[1]).map((obj) => {
             return obj.username;
         }),
-        current: req.user.username
+        current: req.user ? req.user.username : '',
     }))
 });
 

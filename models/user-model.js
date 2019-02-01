@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt-nodejs');
 
 const loginSchema = new Schema({
     username: String,
@@ -22,7 +22,8 @@ loginSchema.methods.isPasswordValid = function(rawPassword, callback) {
 
 loginSchema.pre('save', function(next) {
     var user = this;
-    bcrypt.hash(user.password, 10, function(err, hash) {
+    var salt = bcrypt.genSaltSync(10)
+    bcrypt.hash(user.password,  salt ,null, function(err, hash) {
         if (err) {
             return next(err);
         }
